@@ -701,11 +701,7 @@ const startAgents = async () => {
 
     let charactersArg = args.characters || args.character;
 
-    let characters = [defaultCharacter];
-
-    if (charactersArg) {
-        characters = await loadCharacters(charactersArg);
-    }
+    const characters = await loadCharacters(charactersArg);
 
     try {
         for (const character of characters) {
