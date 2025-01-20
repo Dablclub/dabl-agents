@@ -115,90 +115,47 @@ function isAllStrings(arr: unknown[]): boolean {
 export async function loadCharacters(
     charactersArg: string
 ): Promise<Character[]> {
-    let characterPaths = charactersArg
-        ?.split(",")
-        .map((filePath) => filePath.trim());
     const loadedCharacters = [];
 
-    if (characterPaths?.length > 0) {
-        for (const characterPath of characterPaths) {
-            let content = null;
-            let resolvedPath = "";
+    // Get all character files from the characters directory
+    const characterFiles = fs
+        .readdirSync(path.resolve(__dirname, "../../characters"))
+        .filter((file) => file.endsWith(".character.json"));
 
-            // Try different path resolutions in order
-            const pathsToTry = [
-                characterPath, // exact path as specified
-                path.resolve(process.cwd(), characterPath), // relative to cwd
-                path.resolve(process.cwd(), "agent", characterPath), // Add this
-                path.resolve(__dirname, characterPath), // relative to current script
-                path.resolve(
-                    __dirname,
-                    "characters",
-                    path.basename(characterPath)
-                ), // relative to agent/characters
-                path.resolve(
-                    __dirname,
-                    "../characters",
-                    path.basename(characterPath)
-                ), // relative to characters dir from agent
-                path.resolve(
-                    __dirname,
-                    "../../characters",
-                    path.basename(characterPath)
-                ), // relative to project root characters dir
-            ];
+    for (const characterFile of characterFiles) {
+        let content = null;
+        const characterPath = path.resolve(
+            __dirname,
+            "../../characters",
+            characterFile
+        );
 
+        try {
+            content = fs.readFileSync(characterPath, "utf8");
+            const character = JSON.parse(content);
+            validateCharacterConfig(character);
+
+            // Handle plugins
+            if (isAllStrings(character.plugins)) {
+                elizaLogger.info("Plugins are: ", character.plugins);
+                const importedPlugins = await Promise.all(
+                    character.plugins.map(async (plugin) => {
+                        const importedPlugin = await import(plugin);
+                        return importedPlugin.default;
+                    })
+                );
+                character.plugins = importedPlugins;
+            }
+
+            loadedCharacters.push(character);
             elizaLogger.info(
-                "Trying paths:",
-                pathsToTry.map((p) => ({
-                    path: p,
-                    exists: fs.existsSync(p),
-                }))
+                `Successfully loaded character from: ${characterPath}`
             );
-
-            for (const tryPath of pathsToTry) {
-                content = tryLoadFile(tryPath);
-                if (content !== null) {
-                    resolvedPath = tryPath;
-                    break;
-                }
-            }
-
-            if (content === null) {
-                elizaLogger.error(
-                    `Error loading character from ${characterPath}: File not found in any of the expected locations`
-                );
-                elizaLogger.error("Tried the following paths:");
-                pathsToTry.forEach((p) => elizaLogger.error(` - ${p}`));
-                process.exit(1);
-            }
-
-            try {
-                const character = JSON.parse(content);
-                validateCharacterConfig(character);
-
-                // Handle plugins
-                if (isAllStrings(character.plugins)) {
-                    elizaLogger.info("Plugins are: ", character.plugins);
-                    const importedPlugins = await Promise.all(
-                        character.plugins.map(async (plugin) => {
-                            const importedPlugin = await import(plugin);
-                            return importedPlugin.default;
-                        })
-                    );
-                    character.plugins = importedPlugins;
-                }
-
-                loadedCharacters.push(character);
-                elizaLogger.info(
-                    `Successfully loaded character from: ${resolvedPath}`
-                );
-            } catch (e) {
-                elizaLogger.error(
-                    `Error parsing character from ${resolvedPath}: ${e}`
-                );
-                process.exit(1);
-            }
+        } catch (e) {
+            elizaLogger.error(
+                `Error parsing character from ${characterPath}: ${e}`
+            );
+            process.exit(1);
         }
     }
 
