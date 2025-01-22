@@ -43,9 +43,9 @@
   ],
   "clients": [],
   "plugins": [
+    "plugin-evm",
     "plugin-goat",
-    "plugin-node",
-    "plugin-image-generation"
+    "plugin-web-search"
   ],
   "settings": {
     "voice": {
