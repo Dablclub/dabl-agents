@@ -43,7 +43,8 @@
   ],
   "clients": [
     "client-discord",
-    "client-farcaster"
+    "client-farcaster",
+    "client-twitter"
   ],
   "plugins": [],
   "settings": {
