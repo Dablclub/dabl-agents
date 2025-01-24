@@ -44,8 +44,8 @@
   "clients": [
     "client-telegram",
     "client-twitter",
-    "client-discord",
-    "client-farcaster"
+    "client-farcaster",
+    "client-discord"
   ],
   "plugins": [
     "plugin-evm",
