@@ -42,7 +42,8 @@
     "Market sentiment"
   ],
   "clients": [
-    "client-discord"
+    "client-discord",
+    "client-farcaster"
   ],
   "plugins": [],
   "settings": {
