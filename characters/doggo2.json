@@ -44,7 +44,8 @@
   "clients": [
     "client-discord",
     "client-farcaster",
-    "client-twitter"
+    "client-twitter",
+    "client-telegram"
   ],
   "plugins": [],
   "settings": {
