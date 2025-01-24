@@ -41,9 +41,7 @@
     "Spiritual growth",
     "Cultural impact"
   ],
-  "clients": [
-    "client-discord"
-  ],
+  "clients": [],
   "plugins": [
     "plugin-evm",
     "plugin-goat"
