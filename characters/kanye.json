@@ -43,8 +43,7 @@
   ],
   "clients": [
     "client-telegram",
-    "client-twitter",
-    "client-farcaster"
+    "client-twitter"
   ],
   "plugins": [
     "plugin-evm",
