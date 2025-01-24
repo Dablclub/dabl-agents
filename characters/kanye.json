@@ -43,7 +43,8 @@
   ],
   "clients": [
     "client-telegram",
-    "client-twitter"
+    "client-twitter",
+    "client-discord"
   ],
   "plugins": [
     "plugin-evm",
