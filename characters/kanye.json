@@ -42,7 +42,6 @@
     "Cultural impact"
   ],
   "clients": [
-    "client-twitter",
     "client-discord"
   ],
   "plugins": [
