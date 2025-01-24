@@ -42,7 +42,8 @@
     "Cultural impact"
   ],
   "clients": [
-    "client-telegram"
+    "client-telegram",
+    "client-twitter"
   ],
   "plugins": [
     "plugin-evm",
